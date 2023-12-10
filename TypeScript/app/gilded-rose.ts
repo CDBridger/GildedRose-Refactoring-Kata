@@ -24,19 +24,20 @@ export class GildedRose {
 
   updateQuality() {
     for (let i = 0; i < this.items.length; i++) {
-      if (
-        this.items[i].name != AGED_BRIE &&
-        this.items[i].name != BACKSTAGE_PASSES
-      ) {
+      const isAgedBrie = this.items[i].name == AGED_BRIE;
+      const isBackstagePasses = this.items[i].name == BACKSTAGE_PASSES;
+      const isSulfuras = this.items[i].name == SULFURAS;
+      const isConjured = this.items[i].name.includes(CONJURED);
+      if (!isAgedBrie && !isBackstagePasses) {
         if (this.items[i].quality > 0) {
-          if (this.items[i].name != SULFURAS) {
+          if (!isSulfuras) {
             this.items[i].quality = this.items[i].quality - 1;
           }
         }
       } else {
         if (this.items[i].quality < 50) {
           this.items[i].quality = this.items[i].quality + 1;
-          if (this.items[i].name == BACKSTAGE_PASSES) {
+          if (isBackstagePasses) {
             if (this.items[i].sellIn < 11) {
               if (this.items[i].quality < 50) {
                 this.items[i].quality = this.items[i].quality + 1;
@@ -50,23 +51,27 @@ export class GildedRose {
           }
         }
       }
-      if (this.items[i].name != SULFURAS) {
+      if (!isSulfuras) {
         this.items[i].sellIn = this.items[i].sellIn - 1;
       }
       if (this.items[i].sellIn < 0) {
-        if (this.items[i].name != AGED_BRIE) {
-          if (this.items[i].name != BACKSTAGE_PASSES) {
+        if (!isAgedBrie) {
+          if (!isBackstagePasses) {
             if (this.items[i].quality > 0) {
-              if (this.items[i].name != SULFURAS) {
+              if (!isSulfuras && !isConjured) {
                 this.items[i].quality = this.items[i].quality - 1;
+              } else if (isConjured) {
+                //Conjured items degrade in Quality twice as fast as normal items (4 vs 2 of normal items)
+                this.items[i].quality = Math.max(this.items[i].quality - 3, 0);
               }
             }
           } else {
-            this.items[i].quality =
-              this.items[i].quality - this.items[i].quality;
+            //Back stage pases quality drops to 0 after the concert
+            this.items[i].quality = 0;
           }
         } else {
           if (this.items[i].quality < 50) {
+            //Aged Brie increases in quality the older it gets
             this.items[i].quality = this.items[i].quality + 1;
           }
         }

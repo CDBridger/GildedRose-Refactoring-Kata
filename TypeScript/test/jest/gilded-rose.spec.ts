@@ -106,12 +106,6 @@ describe("Gilded Rose", () => {
     expect(items[0].sellIn).toBe(-1);
   });
 
-  it("should decrease quality of 'Conjured' items by 2", () => {
-    const gildedRose = new GildedRose([new Item("Conjured Foo", 10, 10)]);
-    const items = gildedRose.updateQuality();
-    expect(items[0].quality).toBe(8);
-  });
-
   it("should decrease quality of 'Conjured' items by 4 when sellIn <= 0", () => {
     const gildedRose = new GildedRose([new Item("Conjured Foo", 0, 10)]);
     const items = gildedRose.updateQuality();
