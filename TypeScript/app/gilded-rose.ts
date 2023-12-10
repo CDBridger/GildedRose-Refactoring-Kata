@@ -51,12 +51,9 @@ export class GildedRose {
         item.sellIn = item.sellIn - 1;
       }
 
-      if (item.sellIn < 0) {
-        if (isAgedBrie) {
-          item.quality = Math.min(item.quality + 1, 50);
-          continue;
-        }
-
+      // Aged Brie increases in Quality the older it gets (nowhere in spec does it say after sell date it increases twice as fast)
+      // Double degradation != double increase
+      if (item.sellIn < 0 && !isAgedBrie) {
         if (isBackstagePasses) {
           //Back stage pases quality drops to 0 after the concert
           item.quality = 0;
