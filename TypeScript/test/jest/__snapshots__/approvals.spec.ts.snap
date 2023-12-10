@@ -11,8 +11,7 @@ exports[`Gilded Rose Approval should foo 1`] = `
 `;
 
 exports[`Gilded Rose Approval should thirtyDays 1`] = `
-"OMGHAI!
--------- day 0 --------
+"-------- day 0 --------
 name, sellIn, quality
 +5 Dexterity Vest, 10, 20
 Aged Brie, 2, 0
