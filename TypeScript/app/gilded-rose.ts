@@ -24,9 +24,9 @@ export class GildedRose {
 
   updateQuality() {
     for (let item of this.items) {
-      const isAgedBrie = item.name == AGED_BRIE;
-      const isBackstagePasses = item.name == BACKSTAGE_PASSES;
-      const isSulfuras = item.name == SULFURAS;
+      const isAgedBrie = item.name === AGED_BRIE;
+      const isBackstagePasses = item.name === BACKSTAGE_PASSES;
+      const isSulfuras = item.name === SULFURAS;
       const isConjured = item.name.includes(CONJURED);
       if (!isAgedBrie && !isBackstagePasses) {
         if (item.quality > 0) {
