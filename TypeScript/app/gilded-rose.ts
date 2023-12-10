@@ -29,48 +29,41 @@ export class GildedRose {
       const isSulfuras = item.name === SULFURAS;
       const isConjured = item.name.includes(CONJURED);
 
-      if (!isAgedBrie && !isBackstagePasses) {
-        if (item.quality > 0 && !isSulfuras) {
-          item.quality = item.quality - 1;
+      if (isAgedBrie) {
+        //Aged Brie actually increases in Quality the older it gets
+        item.quality = Math.min(item.quality + 1, 50);
+      } else if (isBackstagePasses) {
+        if (item.sellIn <= 0) {
+          //Backstage passes quality drops to 0 after the concert
+          item.quality = 0;
+        } else if (item.sellIn <= 5) {
+          item.quality = Math.min(item.quality + 3, 50);
+        } else if (item.sellIn <= 10) {
+          item.quality = Math.min(item.quality + 2, 50);
+        } else {
+          item.quality = Math.min(item.quality + 1, 50);
+        }
+      } else if (isSulfuras) {
+        //Sulfuras never has to be sold or decreases in Quality
+        continue;
+      } else if (isConjured) {
+        if (item.sellIn <= 0) {
+          //Conjured items degrade in Quality twice as fast as normal items (4 vs 2 of normal items)
+          item.quality = Math.max(item.quality - 4, 0);
+        } else {
+          item.quality = Math.max(item.quality - 1, 0);
         }
       } else {
-        //Aged Brie increases in quality the older it gets
-        item.quality = Math.min(item.quality + 1, 50);
-        if (isBackstagePasses) {
-          //"Backstage passes", like aged brie, increases in Quality as its SellIn value approaches;
-          //Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but
-          if (item.sellIn <= 5) {
-            item.quality = Math.min(item.quality + 2, 50);
-          } else if (item.sellIn <= 10) {
-            item.quality = Math.min(item.quality + 1, 50);
-          }
+        //Normal item
+        if (item.sellIn <= 0) {
+          //Normal items degrade in Quality twice as fast as normal once the sell by date has passed
+          item.quality = Math.max(item.quality - 2, 0);
+        } else {
+          item.quality = Math.max(item.quality - 1, 0);
         }
       }
-      //"Sulfuras", being a legendary item, never has to be sold or decreases in Quality
-      if (!isSulfuras) {
-        item.sellIn = item.sellIn - 1;
-      }
-
-      // Aged Brie increases in Quality the older it gets (nowhere in spec does it say after sell date it increases twice as fast)
-      // Double degradation != double increase
-      if (item.sellIn < 0 && !isAgedBrie) {
-        if (isBackstagePasses) {
-          //Back stage pases quality drops to 0 after the concert
-          item.quality = 0;
-          continue;
-        }
-
-        if (item.quality > 0) {
-          if (isConjured) {
-            //Conjured items degrade in Quality twice as fast as normal items (4 vs 2 of normal items)
-            item.quality = Math.max(item.quality - 3, 0);
-          } else if (!isSulfuras) {
-            item.quality = item.quality - 1;
-          }
-        }
-      }
+      item.sellIn = item.sellIn - 1;
     }
-
     return this.items;
   }
 }
